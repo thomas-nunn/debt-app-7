@@ -8,10 +8,12 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.debtrepaymentapp.dao.DebtDAO;
 import com.debtrepaymentapp.dao.DebtDAOImpl;
@@ -37,10 +39,20 @@ public class DebtViewController {
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ModelAndView getUserDebts(@RequestParam String userName, @RequestParam String userPassword) throws IOException {
+	public ModelAndView getUserDebts(ModelAndView model,@ModelAttribute ("userID") @RequestParam String userName, @RequestParam String userPassword) throws IOException {
 		
-		theID = userDAO.getUserId(userName, userPassword);
-		List<Debt> listDebts = debtDAO.list(theID.intValue());
+		Integer userID = userDAO.getUserId(userName, userPassword);
+		List<Debt> listDebts = debtDAO.list(userID.intValue());
+		model.addObject("listDebts", listDebts);
+		model.addObject("userID", userID);
+		model.setViewName("DebtHome");
+	    return model;
+	}
+	
+	@RequestMapping(value = "/getDebts/{userID}", method = RequestMethod.GET)
+	public ModelAndView getUserDebtsAfterLogin(@PathVariable int userID) throws IOException {
+		
+		List<Debt> listDebts = debtDAO.list(userID);
 	    return new ModelAndView("DebtHome","listDebts",listDebts);
 	}
 	
@@ -55,10 +67,10 @@ public class DebtViewController {
 	    return new ModelAndView("redirect:/");
 	}
 	
-	@RequestMapping(value = "/DebtForm", method = RequestMethod.GET)
-	public ModelAndView newDebt(ModelAndView model, @ModelAttribute Debt debt) {
-		//Debt newDebt = new Debt();
+	@RequestMapping(value = "/DebtForm")
+	public ModelAndView newDebt(@RequestParam int userID, ModelAndView model, @ModelAttribute Debt debt) {
 	    model.addObject("debt", debt);
+	    model.addObject("userID",userID);
 	    model.setViewName("DebtForm");
 	    return model;
 	}
@@ -70,10 +82,14 @@ public class DebtViewController {
 	    return new ModelAndView("redirect:/");
 	}
 	
-	@RequestMapping(value = "/saveDebt", method = RequestMethod.POST)
-	public ModelAndView saveDebt(@ModelAttribute Debt debt) {
-	    debtDAO.saveOrUpdate(debt,theID);
-	    return new ModelAndView("redirect:/");
+	@RequestMapping(value = "/saveDebt{userID}", method = RequestMethod.POST)
+	public ModelAndView saveDebt(@PathVariable int userID, @ModelAttribute Debt debt,@ModelAttribute User user,RedirectAttributes redirectAttrs) {
+		System.out.println(userID);
+		
+	    debtDAO.saveOrUpdate(debt, userID);
+	    
+	    redirectAttrs.addAttribute("userID", userID);
+	    return new ModelAndView("redirect:/getDebts{userID}");
 	}
 	
 	@RequestMapping(value = "/editDebt", method = RequestMethod.GET)

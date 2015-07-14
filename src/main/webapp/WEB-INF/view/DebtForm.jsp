@@ -13,6 +13,7 @@
 		<h1>New/Edit Debt</h1>
 		<form:form action="saveDebt" method="post" modelAttribute="debt">
 		<table>
+			<form:hidden path="theID" />
 			<tr>
 				<td>Debt Name:</td>
 				<td><form:input path="debtName" /></td>
