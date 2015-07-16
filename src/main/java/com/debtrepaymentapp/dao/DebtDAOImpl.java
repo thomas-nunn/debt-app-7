@@ -47,8 +47,7 @@ public class DebtDAOImpl implements DebtDAO {
  
     public List<Debt> list(final int userID) {
         String sql = "SELECT * FROM debt WHERE user_id =?";
-        System.out.println(sql);
-        /*List<Debt> listDebts = jdbcTemplate.query(sql, new Object[] {1}, new RowMapper<Debt>() {*/
+
             List<Debt> listDebts = jdbcTemplate.query(sql, new Object[] {userID}, new RowMapper<Debt>() {
      
             public Debt mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -59,7 +58,7 @@ public class DebtDAOImpl implements DebtDAO {
                 d.setPayment(rs.getDouble("payment"));
                 d.setRate(rs.getDouble("rate"));
                 d.setBalance(rs.getDouble("balance"));
-                System.out.println("d = " + d.getDebtName());
+
                 return d;
             }
             

@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -17,6 +18,7 @@ import com.debtrepaymentapp.dao.DebtDAO;
 import com.debtrepaymentapp.dao.DebtDAOImpl;
 import com.debtrepaymentapp.dao.UserDAO;
 import com.debtrepaymentapp.dao.UserDAOImpl;
+import com.debtrepaymentapp.model.User;
 
  
 
@@ -81,6 +83,12 @@ public class WebApp extends AbstractAnnotationConfigDispatcherServletInitializer
         public UserDAO getUserDAO() {
         	return new UserDAOImpl(getDataSource());
         }
-    }
+        
+        @Bean
+        public User getUser() {
+        	return new User();
+        }
+        
+     }
 }
 

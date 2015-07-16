@@ -13,8 +13,16 @@
     	<div align="center">
 	        <h1>Debt List</h1>
 	        <h3>
-				<a href="DebtForm">New Debt</a>
-				<input type="hidden" value="${userID}"/>
+				<!--  <a href="DebtForm">New Debt</a>
+				<input value="${userID}"/>
+				<input value="userName" />
+				<input value="${userName}" />-->
+				
+				<form:form action="DebtForm" method="post" modelAttribute="user">
+					<form:hidden path="userName" />
+					<form:hidden path="userPassword" />
+					<input type="submit" value="New Debt">
+				</form:form>				
 	       	</h3>
 	        <table border="1">
 	        	<th>No</th>

@@ -30,30 +30,34 @@ public class DebtViewController {
 	@Autowired
 	private UserDAO userDAO;
 	
-	private Integer theID;
+	@Autowired
+	private User myUser;
+	
 	
 	@RequestMapping(value="/", method = RequestMethod.GET)
 	public ModelAndView loginPage(@ModelAttribute User user) { //the form in LoginHome is mapped to this user
-		//user.setUserId(userId);
 		return new ModelAndView("LoginHome");
 	}
 	
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ModelAndView getUserDebts(ModelAndView model,@ModelAttribute ("userID") @RequestParam String userName, @RequestParam String userPassword) throws IOException {
+	@RequestMapping(value = "/login")
+	public ModelAndView getUserDebts(ModelAndView model, @ModelAttribute User user, @RequestParam String userName, @RequestParam String userPassword) throws IOException {
 		
 		Integer userID = userDAO.getUserId(userName, userPassword);
 		List<Debt> listDebts = debtDAO.list(userID.intValue());
+		
+		myUser.setUserId(userID);
+		myUser.setUserName(userName);
+		myUser.setUserPassword(userPassword);
+		//TODO add in email
+		
 		model.addObject("listDebts", listDebts);
-		model.addObject("userID", userID);
 		model.setViewName("DebtHome");
 	    return model;
 	}
 	
-	@RequestMapping(value = "/getDebts/{userID}", method = RequestMethod.GET)
-	public ModelAndView getUserDebtsAfterLogin(@PathVariable int userID) throws IOException {
-		
-		List<Debt> listDebts = debtDAO.list(userID);
-	    return new ModelAndView("DebtHome","listDebts",listDebts);
+	@RequestMapping(value = "/DebtForm", method = RequestMethod.POST)
+	public ModelAndView newDebt(@ModelAttribute Debt debt) {
+	    return new ModelAndView("DebtForm");
 	}
 	
 	@RequestMapping(value="/register", method=RequestMethod.GET)
@@ -67,13 +71,7 @@ public class DebtViewController {
 	    return new ModelAndView("redirect:/");
 	}
 	
-	@RequestMapping(value = "/DebtForm")
-	public ModelAndView newDebt(@RequestParam int userID, ModelAndView model, @ModelAttribute Debt debt) {
-	    model.addObject("debt", debt);
-	    model.addObject("userID",userID);
-	    model.setViewName("DebtForm");
-	    return model;
-	}
+
 	
 	@RequestMapping(value = "/deleteDebt", method = RequestMethod.GET)
 	public ModelAndView deleteContact(HttpServletRequest request) {
@@ -82,14 +80,12 @@ public class DebtViewController {
 	    return new ModelAndView("redirect:/");
 	}
 	
-	@RequestMapping(value = "/saveDebt{userID}", method = RequestMethod.POST)
-	public ModelAndView saveDebt(@PathVariable int userID, @ModelAttribute Debt debt,@ModelAttribute User user,RedirectAttributes redirectAttrs) {
-		System.out.println(userID);
+	@RequestMapping(value = "/saveDebt", method = RequestMethod.POST)
+	public ModelAndView saveDebt(@ModelAttribute Debt debt,@ModelAttribute User user) {
 		
-	    debtDAO.saveOrUpdate(debt, userID);
-	    
-	    redirectAttrs.addAttribute("userID", userID);
-	    return new ModelAndView("redirect:/getDebts{userID}");
+	    debtDAO.saveOrUpdate(debt, myUser.getUserId());
+	    List<Debt> listDebts = debtDAO.list(myUser.getUserId());
+	    return new ModelAndView("DebtHome","listDebts",listDebts);
 	}
 	
 	@RequestMapping(value = "/editDebt", method = RequestMethod.GET)
