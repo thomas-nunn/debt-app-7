@@ -3,7 +3,6 @@ package com.debtrepaymentapp.model;
 public class Debt {
 
     private int userID;
-    private int debtID = 0;
     private Double payment;
     private Double balance;
     private Double rate;
@@ -27,14 +26,6 @@ public class Debt {
 
 	public void setUserID(int userID) {
 		this.userID = userID;
-	}
-
-	public int getDebtID() {
-		return debtID;
-	}
-
-	public void setDebtID(int debtID) {
-		this.debtID = debtID;
 	}
 
 	public Double getPayment() {

@@ -10,9 +10,9 @@ public interface DebtDAO {
 
 	public void saveOrUpdate(Debt debt,Integer userID);
     
-    public void delete(int debtID);
+    public void delete(int userID, String debtName);
      
-    public Debt get(int debtID);
+    public Debt get(int userID, String debtName);
      
     public List<Debt> list(int userID);
     

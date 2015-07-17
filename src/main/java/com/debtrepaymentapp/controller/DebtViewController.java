@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,19 +41,16 @@ public class DebtViewController {
 	}
 	
 	@RequestMapping(value = "/login")
-	public ModelAndView getUserDebts(ModelAndView model, @ModelAttribute User user, @RequestParam String userName, @RequestParam String userPassword) throws IOException {
+	public ModelAndView getUserDebts(@ModelAttribute User user, @RequestParam String userName, @RequestParam String userPassword) throws IOException {
 		
 		Integer userID = userDAO.getUserId(userName, userPassword);
-		List<Debt> listDebts = debtDAO.list(userID.intValue());
 		
 		myUser.setUserId(userID);
 		myUser.setUserName(userName);
 		myUser.setUserPassword(userPassword);
 		//TODO add in email
 		
-		model.addObject("listDebts", listDebts);
-		model.setViewName("DebtHome");
-	    return model;
+	    return getDebtHome(userID);
 	}
 	
 	@RequestMapping(value = "/DebtForm", method = RequestMethod.POST)
@@ -74,20 +72,30 @@ public class DebtViewController {
 
 	
 	@RequestMapping(value = "/deleteDebt", method = RequestMethod.GET)
-	public ModelAndView deleteContact(HttpServletRequest request) {
-	    int debtID = Integer.parseInt(request.getParameter("id"));
-	    debtDAO.delete(debtID);
-	    return new ModelAndView("redirect:/");
+	public ModelAndView deleteContact(@ModelAttribute Debt debt, @ModelAttribute User user, @RequestParam("debtName") String debtName ) throws IOException {
+		System.out.println(debtName);
+		debtDAO.delete(myUser.getUserId(), debt.getDebtName());
+	    return getDebtHome(myUser.getUserId());
 	}
 	
 	@RequestMapping(value = "/saveDebt", method = RequestMethod.POST)
-	public ModelAndView saveDebt(@ModelAttribute Debt debt,@ModelAttribute User user) {
-		
+	public ModelAndView saveDebt(@ModelAttribute Debt debt, @ModelAttribute User user) {
+		ModelAndView result;
 	    debtDAO.saveOrUpdate(debt, myUser.getUserId());
-	    List<Debt> listDebts = debtDAO.list(myUser.getUserId());
-	    return new ModelAndView("DebtHome","listDebts",listDebts);
+	    
+	    try {
+	    	result =  getDebtHome(myUser.getUserId());
+	    } catch(IOException e) {
+	    	e.printStackTrace();
+	    	result = new ModelAndView("redirect:/login?userName="+myUser.getUserName()+"?userPassword="+myUser.getUserPassword());
+	    } catch(DuplicateKeyException dke) {
+	    	//dke.printStackTrace();
+	    	result = new ModelAndView("redirect:/login?userName="+myUser.getUserName()+"?userPassword="+myUser.getUserPassword());	    	
+	    }
+	    return result;
 	}
 	
+	/**
 	@RequestMapping(value = "/editDebt", method = RequestMethod.GET)
 	public ModelAndView editContact(HttpServletRequest request) {
 	    int debtID = Integer.parseInt(request.getParameter("id"));
@@ -97,6 +105,18 @@ public class DebtViewController {
 	 
 	    return model;
 	}
+	*/
 	
-
+	/**
+	 * Get the ModelAndView which displays the table of User Debts.
+	 * @return DebtHome
+	 */
+	private ModelAndView getDebtHome(int userId) throws IOException {
+		ModelAndView result = new ModelAndView("DebtHome");
+		List<Debt> listDebts = debtDAO.list(userId);
+		result.addObject("userName", myUser.getUserName());
+		result.addObject("listDebts",listDebts);
+		return result;
+	}
+	
 }

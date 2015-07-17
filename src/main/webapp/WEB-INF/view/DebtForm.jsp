@@ -16,7 +16,6 @@
 			<tr>
 				<td>Debt Name:</td>
 				<td><form:input path="debtName" />
-				<input value="${userName}"/>
 			</tr>
 			<tr>
 				<td>Payment:</td>

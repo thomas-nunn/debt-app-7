@@ -24,6 +24,15 @@ public class DebtDAOImpl implements DebtDAO {
     }
  
     public void saveOrUpdate(Debt debt,Integer userID) {
+    	
+    	String sqlUpIn = "INSERT INTO debt (user_id, debt_name, payment, rate, balance)"
+                + " VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE"
+                + " payment = ?, rate = ?, balance = ?";    	
+    	jdbcTemplate.update(sqlUpIn, userID, debt.getDebtName(), debt.getPayment(),
+        		debt.getRate(), debt.getBalance(), debt.getPayment(),
+        		debt.getRate(), debt.getBalance());
+    	
+    	/**
         if (debt.getDebtID() > 0) {
             // update
             String sql = "UPDATE debt SET debt_name=?, payment=?, rate=?, balance=? WHERE debt_id=?";
@@ -36,24 +45,24 @@ public class DebtDAOImpl implements DebtDAO {
             jdbcTemplate.update(sql, userID, debt.getDebtName(), debt.getPayment(),
             		debt.getRate(), debt.getBalance());
         }
+        **/
      
     }
  
-    public void delete(int debtId) {
-    	   String sql = "DELETE FROM debt WHERE debtId=?";
-    	    jdbcTemplate.update(sql, debtId);
+    public void delete(int userID, String debtName) {
+    	   String sql = "DELETE FROM debt WHERE user_id=? AND debt_name=?";
+    	    jdbcTemplate.update(sql, userID, debtName);
     	    
     }
  
     public List<Debt> list(final int userID) {
-        String sql = "SELECT * FROM debt WHERE user_id =?";
+        String sql = "SELECT * FROM debt WHERE user_id = ? ORDER BY balance DESC";
 
             List<Debt> listDebts = jdbcTemplate.query(sql, new Object[] {userID}, new RowMapper<Debt>() {
      
             public Debt mapRow(ResultSet rs, int rowNum) throws SQLException {
             	Debt d = new Debt();
             	d.setUserID(userID);
-                d.setDebtID(rs.getInt("debt_id"));
                 d.setDebtName(rs.getString("debt_name"));
                 d.setPayment(rs.getDouble("payment"));
                 d.setRate(rs.getDouble("rate"));
@@ -68,8 +77,8 @@ public class DebtDAOImpl implements DebtDAO {
         return listDebts;
     }
 
-    public Debt get(int debtId) {
-        String sql = "SELECT * FROM debt WHERE debt_id=" + debtId;
+    public Debt get(int userID, String debtName) {
+        String sql = "SELECT * FROM debt WHERE user_id="+userID+" And debt_name="+debtName;
         return jdbcTemplate.query(sql, new ResultSetExtractor<Debt>() {
      
             public Debt extractData(ResultSet rs) throws SQLException,
@@ -77,7 +86,6 @@ public class DebtDAOImpl implements DebtDAO {
                 if (rs.next()) {
                 	
                 	Debt d2 = new Debt();
-                	d2.setDebtID(rs.getInt("debt_id"));
                 	d2.setDebtName(rs.getString("debt_name"));
                 	d2.setPayment(rs.getDouble("payment"));
                 	d2.setRate(rs.getDouble("rate"));

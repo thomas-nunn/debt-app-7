@@ -11,18 +11,13 @@
     </head>
     <body>
     	<div align="center">
-	        <h1>Debt List</h1>
+	        <h1>${userName}'s Debt List</h1>
 	        <h3>
-				<!--  <a href="DebtForm">New Debt</a>
-				<input value="${userID}"/>
-				<input value="userName" />
-				<input value="${userName}" />-->
-				
 				<form:form action="DebtForm" method="post" modelAttribute="user">
 					<form:hidden path="userName" />
 					<form:hidden path="userPassword" />
 					<input type="submit" value="New Debt">
-				</form:form>				
+				</form:form>		
 	       	</h3>
 	        <table border="1">
 	        	<th>No</th>
@@ -40,9 +35,9 @@
 					<td>${debt.rate}</td>
 					<td>${debt.balance}</td>
 					<td>
-						<a href="editDebt?id=${debt.debtID}">Edit</a>
+						<a href="editDebt?debtName=${debt.debtName}">Edit</a>
 						&nbsp;&nbsp;&nbsp;&nbsp;
-						<a href="deleteDebt?id=${debt.debtID}">Delete</a>
+						<a href="deleteDebt?debtName=${debt.debtName}">Delete</a>
 					</td>
 							
 	        	</tr>
