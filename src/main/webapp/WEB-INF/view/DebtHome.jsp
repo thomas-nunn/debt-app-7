@@ -35,7 +35,7 @@
 					<td>${debt.rate}</td>
 					<td>${debt.balance}</td>
 					<td>
-						<a href="editDebt?debtName=${debt.debtName}">Edit</a>
+						<a href="editDebt?debtName=${debt.debtName}&payment=${debt.payment}&rate=${debt.rate}&balance=${debt.balance}">Edit</a>
 						&nbsp;&nbsp;&nbsp;&nbsp;
 						<a href="deleteDebt?debtName=${debt.debtName}">Delete</a>
 					</td>

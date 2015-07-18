@@ -40,6 +40,15 @@ public class DebtViewController {
 		return new ModelAndView("LoginHome");
 	}
 	
+	/**
+	 * This method will set the values for the User bean and should only be called once.
+	 * 
+	 * @param user
+	 * @param userName
+	 * @param userPassword
+	 * @return
+	 * @throws IOException
+	 */
 	@RequestMapping(value = "/login")
 	public ModelAndView getUserDebts(@ModelAttribute User user, @RequestParam String userName, @RequestParam String userPassword) throws IOException {
 		
@@ -68,16 +77,7 @@ public class DebtViewController {
 	    debtDAO.createUser(user);
 	    return new ModelAndView("redirect:/");
 	}
-	
 
-	
-	@RequestMapping(value = "/deleteDebt", method = RequestMethod.GET)
-	public ModelAndView deleteContact(@ModelAttribute Debt debt, @ModelAttribute User user, @RequestParam("debtName") String debtName ) throws IOException {
-		System.out.println(debtName);
-		debtDAO.delete(myUser.getUserId(), debt.getDebtName());
-	    return getDebtHome(myUser.getUserId());
-	}
-	
 	@RequestMapping(value = "/saveDebt", method = RequestMethod.POST)
 	public ModelAndView saveDebt(@ModelAttribute Debt debt, @ModelAttribute User user) {
 		ModelAndView result;
@@ -87,25 +87,41 @@ public class DebtViewController {
 	    	result =  getDebtHome(myUser.getUserId());
 	    } catch(IOException e) {
 	    	e.printStackTrace();
+	    	
+	    	//TODO This will probably never get executed...throw IOException instead?
 	    	result = new ModelAndView("redirect:/login?userName="+myUser.getUserName()+"?userPassword="+myUser.getUserPassword());
-	    } catch(DuplicateKeyException dke) {
-	    	//dke.printStackTrace();
-	    	result = new ModelAndView("redirect:/login?userName="+myUser.getUserName()+"?userPassword="+myUser.getUserPassword());	    	
 	    }
 	    return result;
 	}
 	
-	/**
-	@RequestMapping(value = "/editDebt", method = RequestMethod.GET)
-	public ModelAndView editContact(HttpServletRequest request) {
-	    int debtID = Integer.parseInt(request.getParameter("id"));
-	    Debt debt = debtDAO.get(debtID);
-	    ModelAndView model = new ModelAndView("ContactForm");
-	    model.addObject("debt", debt);
-	 
-	    return model;
+	@RequestMapping(value = "/deleteDebt", method = RequestMethod.GET)
+	public ModelAndView deleteContact(@ModelAttribute Debt debt, @ModelAttribute User user, @RequestParam("debtName") String debtName) throws IOException {
+		System.out.println(debtName);
+		debtDAO.delete(myUser.getUserId(), debt.getDebtName());
+	    return getDebtHome(myUser.getUserId());
 	}
-	*/
+	
+	@RequestMapping(value = "/editDebt")
+	public ModelAndView editDebt(@ModelAttribute Debt debt, @RequestParam("debtName") String debtName,
+			@RequestParam("payment") String payment,@RequestParam("rate") String rate,
+			@RequestParam("balance") String balance) throws IOException {
+		
+		double p = Double.parseDouble(payment);
+		double r = Double.parseDouble(rate);
+		double b = Double.parseDouble(balance);
+		
+	    debtDAO.saveOrUpdate(new Debt(myUser.getUserId(),p,b,r,debtName), myUser.getUserId());
+	    
+	    ModelAndView model = new ModelAndView("DebtEditForm");
+	    model.addObject("payment", p);
+	    model.addObject("rate", r);
+	    model.addObject("balance", b);
+	    model.addObject("debtName", debtName);
+	    
+	    return model;
+	    
+	}
+	
 	
 	/**
 	 * Get the ModelAndView which displays the table of User Debts.

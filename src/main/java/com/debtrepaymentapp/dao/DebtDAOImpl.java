@@ -23,30 +23,16 @@ public class DebtDAOImpl implements DebtDAO {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
  
+    
     public void saveOrUpdate(Debt debt,Integer userID) {
     	
-    	String sqlUpIn = "INSERT INTO debt (user_id, debt_name, payment, rate, balance)"
+    	String sqlInUp = "INSERT INTO debt (user_id, debt_name, payment, rate, balance)"
                 + " VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE"
                 + " payment = ?, rate = ?, balance = ?";    	
-    	jdbcTemplate.update(sqlUpIn, userID, debt.getDebtName(), debt.getPayment(),
+    	jdbcTemplate.update(sqlInUp, userID, debt.getDebtName(), debt.getPayment(),
         		debt.getRate(), debt.getBalance(), debt.getPayment(),
         		debt.getRate(), debt.getBalance());
-    	
-    	/**
-        if (debt.getDebtID() > 0) {
-            // update
-            String sql = "UPDATE debt SET debt_name=?, payment=?, rate=?, balance=? WHERE debt_id=?";
-            jdbcTemplate.update(sql, debt.getPayment(), debt.getRate(),
-            		debt.getBalance(), debt.getDebtName(), debt.getDebtID());
-        } else {
-            // insert
-            String sql = "INSERT INTO debt (user_id, debt_name, payment, rate, balance)"
-                        + " VALUES (?, ?, ?, ?, ?)";
-            jdbcTemplate.update(sql, userID, debt.getDebtName(), debt.getPayment(),
-            		debt.getRate(), debt.getBalance());
-        }
-        **/
-     
+ 
     }
  
     public void delete(int userID, String debtName) {
