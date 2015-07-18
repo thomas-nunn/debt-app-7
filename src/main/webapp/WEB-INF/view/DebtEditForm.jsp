@@ -10,8 +10,8 @@
 </head>
 <body>
 	<div align="center">
-		<h1>New/Edit Debt</h1>
-		<form:form action="editDebt" method="post" modelAttribute="debt">
+		<h1>Edit Debt</h1>
+		<form:form action="saveDebt" method="post" modelAttribute="debt">
 		<table>
 			<tr>
 				<td>Debt Name:</td>

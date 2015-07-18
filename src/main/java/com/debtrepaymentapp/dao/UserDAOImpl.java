@@ -21,6 +21,18 @@ public class UserDAOImpl implements UserDAO {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
     
+    public boolean createUser(String userName, String userEmail, String userPassword, String passwordVerify) {
+    	boolean result;
+    	if (userPassword.equals(passwordVerify)) {
+    		String sql = "INSERT INTO user (user_name, email, password) VALUES (?,?,?)";
+    		jdbcTemplate.update(sql,userName,userEmail,userPassword);
+    		result = true;
+    	} else {
+    		result = false;
+    	}
+    	return result;
+    }
+    
 	public int getUserId(String userName, String userPassword) {
 		
 		String sql = "SELECT user_id from user WHERE user_name=? AND password=?";

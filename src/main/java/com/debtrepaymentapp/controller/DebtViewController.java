@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +36,11 @@ public class DebtViewController {
 	@Autowired
 	private User myUser;
 	
-	
+	/**
+	 * The landing page for this application.
+	 * @param user
+	 * @return LoginHome
+	 */
 	@RequestMapping(value="/", method = RequestMethod.GET)
 	public ModelAndView loginPage(@ModelAttribute User user) { //the form in LoginHome is mapped to this user
 		return new ModelAndView("LoginHome");
@@ -73,9 +79,24 @@ public class DebtViewController {
 	}
 	
 	@RequestMapping(value = "/createUser", method = RequestMethod.POST)
-	public ModelAndView saveUser(@ModelAttribute User user) {
-	    debtDAO.createUser(user);
-	    return new ModelAndView("redirect:/");
+	public ModelAndView createUser(@ModelAttribute("user") @Valid User user,
+			BindingResult br) {
+		
+		ModelAndView result;
+		boolean success = userDAO.createUser(user.getUserName(),user.getUserEmail(),user.getUserPassword(),user.getPasswordVerify());
+		
+	    System.out.println("BindingResult has errors? -> " + br.hasErrors());
+	    
+	    if (success) {	    	
+	    	result = new ModelAndView("redirect:/login");
+	    	//result.addObject("userName", userName);
+	    	//result.addObject("userPassword", userPassword);
+	    	result.addObject("userName", user.getUserName());
+	    	result.addObject("userPassword", user.getUserPassword());
+	    } else {
+	    	result = new ModelAndView("redirect:/register");
+	    }
+	    return result;
 	}
 
 	@RequestMapping(value = "/saveDebt", method = RequestMethod.POST)

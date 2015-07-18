@@ -6,11 +6,11 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>New/Edit Contact</title>
+<title>Create New Debt</title>
 </head>
 <body>
 	<div align="center">
-		<h1>New/Edit Debt</h1>
+		<h1>New Debt</h1>
 		<form:form action="saveDebt" method="post" modelAttribute="debt">
 		<table>
 			<tr>

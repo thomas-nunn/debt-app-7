@@ -11,11 +11,15 @@
 <body>
 	<div align="center">
 		<h1>Create a new account</h1>
-		<form:form action="register" method="post" modelAttribute="user">
+		<form:form action="createUser" method="post" modelAttribute="user">
 		<table>
 			<tr>
 				<td>User Name:</td>
 				<td><form:input path="userName" /></td>
+			</tr>
+			<tr>
+				<td>Email:</td>
+				<td><form:input path="userEmail" /></td>
 			</tr>
 			<tr>
 				<td>Password:</td>

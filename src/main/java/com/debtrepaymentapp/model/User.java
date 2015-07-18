@@ -1,11 +1,25 @@
 package com.debtrepaymentapp.model;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 public class User {
 	
 	private int userId;
+	
+	@NotNull
+	@Size(min=2, max=30)
 	private String userName;
+	
+	@NotNull
 	private String userEmail;
+	
+	@NotNull
+	@Size(min=6, max=15)
 	private String userPassword;
+	
+	@NotNull
+	@Size(min=6, max=15)
 	private String passwordVerify;
 	
 	public User() {
