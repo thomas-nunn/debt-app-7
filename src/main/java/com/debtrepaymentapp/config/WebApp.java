@@ -1,12 +1,14 @@
 package com.debtrepaymentapp.config;
 
 import javax.sql.DataSource;
+import javax.validation.Validator;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -74,6 +76,11 @@ public class WebApp extends AbstractAnnotationConfigDispatcherServletInitializer
             return dataSource;
         }
          
+        @Bean
+        Validator beanValidation() {
+            return new LocalValidatorFactoryBean();
+        }
+        
         @Bean
         public DebtDAO getDebtDAO() {
             return new DebtDAOImpl(getDataSource());

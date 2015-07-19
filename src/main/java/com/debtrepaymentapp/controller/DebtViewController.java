@@ -79,22 +79,22 @@ public class DebtViewController {
 	}
 	
 	@RequestMapping(value = "/createUser", method = RequestMethod.POST)
-	public ModelAndView createUser(@ModelAttribute("user") @Valid User user,
-			BindingResult br) {
+	public ModelAndView createUser(@Valid User user, BindingResult br) {
 		
 		ModelAndView result;
 		boolean success = userDAO.createUser(user.getUserName(),user.getUserEmail(),user.getUserPassword(),user.getPasswordVerify());
 		
 	    System.out.println("BindingResult has errors? -> " + br.hasErrors());
-	    
+	    System.out.println("BindingResult has field errors? -> " + br.hasFieldErrors());
+	    System.out.println("BindingResult = -> " + br.toString());
+
+
 	    if (success) {	    	
 	    	result = new ModelAndView("redirect:/login");
-	    	//result.addObject("userName", userName);
-	    	//result.addObject("userPassword", userPassword);
 	    	result.addObject("userName", user.getUserName());
 	    	result.addObject("userPassword", user.getUserPassword());
 	    } else {
-	    	result = new ModelAndView("redirect:/register");
+	    	result = new ModelAndView("Register");
 	    }
 	    return result;
 	}
