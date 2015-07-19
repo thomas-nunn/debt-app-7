@@ -8,7 +8,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Register a New Account</title>
-<link href="<c:url value="/resources/css/errors.css" />" rel="stylesheet">
+<link href="<c:url value="/resources/errors.css" />" rel="stylesheet">
 </head>
 <body>
 	<div align="center">
@@ -16,24 +16,33 @@
 		<form:form action="createUser" method="post" modelAttribute="user">
 		<table>
 			<tr>
-				<td class="user-create">User Name:</td>
+				<td>User Name:</td>
 				<td> 
 					<form:input path="userName" />
-					<form:errors path="userName" cssclass="user-create"></form:errors>
+					<form:errors path="userName" class="user-create"></form:errors>
 				</td>
 				
 			</tr>
 			<tr>
 				<td>Email:</td>
-				<td><form:input path="userEmail" /></td>
+				<td>
+					<form:input path="userEmail" />
+					<form:errors path="userEmail" class="user-create"></form:errors>
+				</td>
 			</tr>
 			<tr>
 				<td>Password:</td>
-				<td><form:input path="userPassword" /></td>
+				<td>
+					<form:input path="userPassword" />
+					<form:errors path="userPassword" class="user-create"></form:errors>
+				</td>
 			</tr>
 			<tr>
 				<td>Verify Password:</td>
-				<td><form:input path="passwordVerify" /></td>
+				<td>
+					<form:input path="passwordVerify" />
+					<form:errors path="passwordVerify" class="user-create"></form:errors>
+				</td>
 			</tr>
 			<tr>
 				<td colspan="2" align="center"><input type="submit" value="Register"></td>

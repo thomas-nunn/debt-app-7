@@ -3,6 +3,8 @@ package com.debtrepaymentapp.model;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.Email;
+
 public class User {
 	
 	private int userId;
@@ -12,6 +14,7 @@ public class User {
 	private String userName;
 	
 	@NotNull
+	@Email
 	private String userEmail;
 	
 	@NotNull

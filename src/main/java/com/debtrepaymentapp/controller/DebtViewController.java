@@ -83,13 +83,8 @@ public class DebtViewController {
 		
 		ModelAndView result;
 		boolean success = userDAO.createUser(user.getUserName(),user.getUserEmail(),user.getUserPassword(),user.getPasswordVerify());
-		
-	    System.out.println("BindingResult has errors? -> " + br.hasErrors());
-	    System.out.println("BindingResult has field errors? -> " + br.hasFieldErrors());
-	    System.out.println("BindingResult = -> " + br.toString());
 
-
-	    if (success) {	    	
+	    if (success && !br.hasErrors()) {	    	
 	    	result = new ModelAndView("redirect:/login");
 	    	result.addObject("userName", user.getUserName());
 	    	result.addObject("userPassword", user.getUserPassword());

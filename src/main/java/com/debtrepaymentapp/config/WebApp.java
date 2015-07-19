@@ -62,6 +62,7 @@ public class WebApp extends AbstractAnnotationConfigDispatcherServletInitializer
          
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
+            //registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
             registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
         }
      
