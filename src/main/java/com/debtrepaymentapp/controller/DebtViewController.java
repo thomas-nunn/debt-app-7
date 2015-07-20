@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.debtrepaymentapp.dao.DebtDAO;
 import com.debtrepaymentapp.dao.DebtDAOImpl;
@@ -65,7 +64,7 @@ public class DebtViewController {
 		myUser.setUserPassword(userPassword);
 		//TODO add in email
 		
-	    return getDebtHome(userID);
+	    return getDebtHome();
 	}
 	
 	@RequestMapping(value = "/DebtForm", method = RequestMethod.POST)
@@ -100,7 +99,7 @@ public class DebtViewController {
 	    debtDAO.saveOrUpdate(debt, myUser.getUserId());
 	    
 	    try {
-	    	result =  getDebtHome(myUser.getUserId());
+	    	result =  getDebtHome();
 	    } catch(IOException e) {
 	    	e.printStackTrace();
 	    	
@@ -112,40 +111,29 @@ public class DebtViewController {
 	
 	@RequestMapping(value = "/deleteDebt", method = RequestMethod.GET)
 	public ModelAndView deleteContact(@ModelAttribute Debt debt, @ModelAttribute User user, @RequestParam("debtName") String debtName) throws IOException {
-		System.out.println(debtName);
+		//System.out.println(debtName);
 		debtDAO.delete(myUser.getUserId(), debt.getDebtName());
-	    return getDebtHome(myUser.getUserId());
+	    return getDebtHome();
 	}
 	
 	@RequestMapping(value = "/editDebt")
-	public ModelAndView editDebt(@ModelAttribute Debt debt, @RequestParam("debtName") String debtName,
-			@RequestParam("payment") String payment,@RequestParam("rate") String rate,
-			@RequestParam("balance") String balance) throws IOException {
+	public ModelAndView editDebt(@ModelAttribute Debt debt) throws IOException {
 		
-		double p = Double.parseDouble(payment);
-		double r = Double.parseDouble(rate);
-		double b = Double.parseDouble(balance);
+		debtDAO.saveOrUpdate(debt, myUser.getUserId());
 		
-	    debtDAO.saveOrUpdate(new Debt(myUser.getUserId(),p,b,r,debtName), myUser.getUserId());
-	    
-	    ModelAndView model = new ModelAndView("DebtEditForm");
-	    model.addObject("payment", p);
-	    model.addObject("rate", r);
-	    model.addObject("balance", b);
-	    model.addObject("debtName", debtName);
-	    
-	    return model;
-	    
+	    return new ModelAndView("DebtEditForm", "debt", debt);
 	}
 	
 	
 	/**
 	 * Get the ModelAndView which displays the table of User Debts.
+	 * By the time this method is called the myUser field has been set.
+	 * 
 	 * @return DebtHome
 	 */
-	private ModelAndView getDebtHome(int userId) throws IOException {
+	private ModelAndView getDebtHome() throws IOException {
 		ModelAndView result = new ModelAndView("DebtHome");
-		List<Debt> listDebts = debtDAO.list(userId);
+		List<Debt> listDebts = debtDAO.list(myUser.getUserId());
 		result.addObject("userName", myUser.getUserName());
 		result.addObject("listDebts",listDebts);
 		return result;

@@ -2,15 +2,18 @@ package com.debtrepaymentapp.model;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+//import javax.validation.constraints.;
 
 import org.hibernate.validator.constraints.Email;
+//import org.hibernate.validator.constraints.;
+
 
 public class User {
 	
 	private int userId;
 	
 	@NotNull
-	@Size(min=2, max=30)
+	@Size(min=2, max=40)
 	private String userName;
 	
 	@NotNull

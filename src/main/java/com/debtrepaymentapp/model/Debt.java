@@ -1,15 +1,30 @@
 package com.debtrepaymentapp.model;
 
+import javax.validation.constraints.Size;
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.NotNull;
+
 public class Debt {
 
     private int userID;
+    
+    @NotNull
+    @DecimalMax("999999999.99")
     private Double payment;
+    
+    @NotNull
+    @DecimalMax("999999999.99")
     private Double balance;
+    
+    @NotNull
+    @DecimalMax("99.99")
     private Double rate;
+    
+    @NotNull
+    @Size(min=1,max=40)
     private String debtName;
     
-    public Debt() {
-    	
+    public Debt() {   	
     }
     
     public Debt(int theUserID,Double thePayment,Double theBalance,Double theRate,String theDebtName) {
